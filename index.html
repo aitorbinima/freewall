@@ -12,7 +12,7 @@
 		<h1>Hola</h1>
 
 		<div id="freewall" class="freewall-container">
-			<div class="item-card open" data-position="0-0">
+			<div class="item-card open">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="0-2">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -60,7 +60,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="0-3">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -84,7 +84,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="0-4">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -108,7 +108,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="1-2">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -132,7 +132,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="1-3">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -156,7 +156,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card" data-position="1-4">
+			<div class="item-card">
 				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
@@ -193,30 +193,20 @@
   <script>
     $(function() {
 
-		  wallwidth = $('.freewall-container').width();
-		  console.log('wall width = ' + wallwidth);
+		  // wallwidth = $('.freewall-container').width();
+		  // console.log('wall width = ' + wallwidth);
 
-		  wallwidthscale = (wallwidth / 4);
-		  console.log('wall width scale = ' + wallwidthscale);
+		  // wallwidthscale = (wallwidth / 4);
+		  // console.log('wall width scale = ' + wallwidthscale);
 
-		  window.wall = new freewall('.freewall-container');
+		  console.log(window.innerWidth);
 
-		  wall.reset({
-	      selector: '.item-card',
-	      animate: true,
-		  	cache: false,
-			  cellW: function(width) {
-			    // width is the width of container;
-			    return width/5;
-			  },
-	      cellH: 208,
-	      gutterY: 10,
-	      gutterX: 10,
-	      onResize: function() {
-	        wall.fitWidth();
-	      }
-		  });
-		  wall.fitWidth();
+			window.windowSizeInit = window.innerWidth;
+			window.windowSizeEnd = window.innerWidth;
+
+		  load_freewall_settings();
+
+
 
 		  $('.open_item_card').click(function(){
 		  	console.log('open_item_card');
@@ -323,7 +313,6 @@
 
 		        var $obj = { block: $( this ), width: widthCard, height: heightCard};
 		        wall.unFilter();
-		  			//wall.keepOrder({ block: $dna });
 		        wall.fixSize($obj);
 		        wall.fixPos({ block: $( this ), top:position_y,left:position_x});
 		        wall.refresh();
@@ -333,6 +322,71 @@
       });
 
     });
+
+		$(window).resize(function(){
+			load_freewall_settings();
+		});
+
+
+	  function load_freewall_settings(){
+
+	  	windowSizeEnd = window.innerWidth;
+		  var columns = 5;
+		  var cellHeight = 210;
+		  var position_initial = ["0-0","0-2","0-3","0-4","1-2","1-3","1-4"];
+
+		  if (windowSizeEnd < 992 && windowSizeEnd >= 768) {
+		  	columns = 4;
+		  	cellHeight = 140;
+		  	position_initial = ["0-0","0-2","0-3","1-2","1-3","2-2","2-3"];
+		  }
+
+		  $('.freewall-container .item-card').each(function(index, el) {
+		  	$(this).attr('data-position', position_initial[index]);
+		  });
+			/* Cambio de pantalla < 768 a pantalla >= 768 */
+		  if ( windowSizeInit < windowSizeEnd && windowSizeEnd >= 992 && windowSizeInit < 992 ) {
+
+		  	$('.freewall-container .item-card').removeAttr('style');
+		  	$.each($('.freewall-container .item-card').data(), function (i) {
+		  		$(this).removeAttr("data-" + i);
+				});
+		  	console.log('cambio a lg');
+
+		  } else if( windowSizeInit > windowSizeEnd && windowSizeEnd < 992 && windowSizeInit >= 992 ){
+
+		  	$('.freewall-container .item-card').removeAttr('style');
+		  	$.each($('.freewall-container .item-card').data(), function (i) {
+		  		$(this).removeAttr("data-" + i);
+				});
+		  	console.log('Cambio a md');
+
+		  } else{
+		  	//return false;
+		  }
+
+		  window.wall = new freewall('.freewall-container');
+
+		  wall.reset({
+	      selector: '.item-card',
+	      animate: true,
+		  	cache: false,
+			  cellW: function(width) {
+			    // width is the width of container;
+			    return width/columns;
+			  },
+	      cellH: cellHeight,
+	      gutterY: 10,
+	      gutterX: 10,
+	      onResize: function() {
+	        wall.fitWidth();
+	      }
+		  });
+		  wall.fitWidth();
+		  //wall.refresh();
+		  
+		  windowSizeInit = windowSizeEnd;
+	  }
   </script>
 
 </body>

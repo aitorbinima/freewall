@@ -38,3 +38,12 @@
 .item-card .item-card-open.open{
 	display: block;
 }
+
+
+@media only screen and (max-width : 991px) {
+	.freewall-container .item-card{
+		width: 20%;
+		height: 140px;
+	}
+}
+
