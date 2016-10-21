@@ -84,8 +84,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="item-card">
-				<div class="item-card-content" data-position="0-4">
+			<div class="item-card" data-position="0-4">
+				<div class="item-card-content">
 					<div class="row">
 						<div class="col-xs-12">
 							<h2>4 Introducing the city</h2>
@@ -192,14 +192,7 @@
 
   <script>
     $(function() {
-      //window.wall = new Freewall(".freewall-container");
-   //    wall.fitWidth();
-   //    wall.reset({
-			//   selector: '.item-card',
-			//   onResize: function() {
-			//     this.fitWidth();
-			//   }
-			// });
+
 		  wallwidth = $('.freewall-container').width();
 		  console.log('wall width = ' + wallwidth);
 
@@ -219,12 +212,8 @@
 	      cellH: 208,
 	      gutterY: 10,
 	      gutterX: 10,
-	      draggable: true,
-	      onBlockResize: function(){
-	      	console.log('onBlockResize');
-	      },
 	      onResize: function() {
-	          wall.fitWidth();
+	        wall.fitWidth();
 	      }
 		  });
 		  wall.fitWidth();
@@ -237,22 +226,33 @@
 		  	var $dnaID = $dna.attr('id');
 		        var widthCard = $dna.width();
 		        var heightCard = $dna.height();
-		  	$dna.addClass('open');
+		  	//$dna.addClass('open');
+
+		  	var position_x_range = 2;
+		  	var position_y_range = 2;
 
 		  	wallContainer.find('.item-card').each(function(index, el) {
 		  		if ( $( this ).attr('id') == $dnaID ) {
-		  			console.log($( this ).attr('id'));
-		  			console.log($dnaID);
+		  			// console.log($( this ).attr('id'));
+		  			// console.log($dnaID);
 		  			
 		  			var position = $dna.data('position').split("-");
-		  			var position_y = position[0];
-		  			var position_x = position[1];
-		  			console.log(position_x);
-		  			console.log(position_y);
-		  			if ( position_x == 0 || position_x == 1 ) {
-		  				position_x == 0;
-		  			} else {
-		  				position_x = position_x - 1;
+		  			window.position_y = position[0];
+		  			window.position_x = position[1];
+		  			// console.log(position_x);
+		  			// console.log(position_y);
+		  			// if ( position_x == 0 || position_x == 1 ) {
+		  			// 	position_x == 0;
+		  			// } else {
+		  			// 	position_x = position_x - 1;
+		  			// }
+		  			position_x = position_x -1;
+		  			if ( position_x <= 0 ) {
+		  				position_x = 0;
+		  			}
+		  			position_y = position_y -1;
+		  			if ( position_y <= 0 ) {
+		  				position_y = 0;
 		  			}
 		  			
 		        widthCard2 = $dna.width()*2;
@@ -262,20 +262,74 @@
 		        wall.unFilter();
 		        wall.fixSize($obj2);
 		        wall.fixPos({ block: $dna, top:position_y,left:position_x});
-		        //wall.refresh();
+		        wall.refresh();
+		  		}
+		  	});
 
-		  		} else{
-		  		//return true;
-		        console.log(widthCard);
+		  	var position_featured_y = position_y;
+		  	var position_featured_x = position_x;
+
+		  	wallContainer.find('.item-card').each(function(index, el) {
+		  		if ( $( this ).attr('id') != $dnaID ) {
+		  			//console.log($(this).data('position'));
+		  			var position = $(this).data('position').split("-");
+		  			var position_y = position[0];
+		  			var position_x = position[1];
+
+		  			if (position_x < position_featured_x) {
+
+		  				console.log('<');
+		  				if (position_y == 0) {
+		  					position_x = position_x - 1;
+		  				} else if (position_y == 1) {
+		  					position_x = position_x - 2;
+		  				}
+		  				// control position
+		  				if ( position_x <= 0 ) {
+			  				position_x = 0;
+			  			}
+
+		  			} else if (position_x == position_featured_x) {
+
+		  				// arriba - izquierda
+		  				if (position_y == 0) {
+		  					position_x = position_x - 1;
+		  				} else if (position_y == 1) {
+		  					position_x = position_x - 2;
+		  				}
+		  				// control position
+		  				if ( position_x <= 0 ) {
+			  				position_x = 0;
+			  			}
+		  				if ( position_y <= 0 ) {
+			  				position_y = 0;
+			  			}
+
+		  			} else if( position_x == (position_featured_x + 1) ){
+			  				position_x = position_x - 2;
+			  				if ( position_y == 0 ) {
+			  					position_y = position_y + 1;
+			  				}
+			  				if ( position_x <= 0 ) {
+				  				position_x = 0;
+				  			}
+				  			if ( position_y <= 0 ) {
+				  				position_y = 0;
+				  			}
+
+		  			} else{
+		  				//no mover
+		  			}
 
 		        var $obj = { block: $( this ), width: widthCard, height: heightCard};
 		        wall.unFilter();
+		  			//wall.keepOrder({ block: $dna });
 		        wall.fixSize($obj);
-		        //wall.refresh();
-
+		        wall.fixPos({ block: $( this ), top:position_y,left:position_x});
+		        wall.refresh();
 		  		}
 		  	});
-		  	wall.refresh();
+		  	//wall.refresh();
       });
 
     });
